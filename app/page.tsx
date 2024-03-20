@@ -16,6 +16,8 @@ export default function Home() {
     length: 50,
   });
 
+  const generatePrice = () => Math.random() * (100 - 1) + 1;
+
   return (
     <main className="container mt-4">
       <section className="grid grid-cols-2 items-center gap-2">
@@ -49,7 +51,17 @@ export default function Home() {
 
       <section className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 my-8">
         {items.map((_, index) => (
-          <ProductItem key={index} />
+          <ProductItem
+            key={index}
+            product={{
+              id: index,
+              name: `Producto ${index}`,
+              description: "",
+              unit_price: generatePrice(),
+              created_at: new Date(),
+              updated_at: new Date(),
+            }}
+          />
         ))}
       </section>
     </main>

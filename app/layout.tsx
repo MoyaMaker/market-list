@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/components/theme-provider";
 import { Header } from "@/lib/components/header";
 import { cn } from "@/lib/utils";
+import { CartProvider } from "@/lib/components/cart-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,8 +27,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          {children}
+          <CartProvider>
+            <Header />
+            {children}
+          </CartProvider>
         </ThemeProvider>
       </body>
     </html>

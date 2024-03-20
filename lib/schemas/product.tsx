@@ -14,13 +14,3 @@ export const FormProductSchema = ProductSchema.pick({
   description: true,
   unit_price: true,
 });
-
-export const CartItemSchema = z.object({
-  product: ProductSchema.pick({
-    id: true,
-    name: true,
-    unit_price: true,
-  }),
-  quantity: z.number().default(1),
-  price: z.number().default(0),
-});
