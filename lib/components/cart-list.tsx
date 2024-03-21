@@ -1,5 +1,6 @@
 "use client";
 import { ShoppingCartIcon, TrashIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import {
   Sheet,
@@ -28,6 +29,10 @@ export function CartList() {
     setSelectAll,
     removeSelected,
   } = useCart();
+
+  const { data } = useSession();
+
+  if (!data) return "";
 
   return (
     <Sheet>
