@@ -29,6 +29,7 @@ import {
 import { Product } from "../types/product";
 import { useCart } from "./cart-provider";
 import { CartItem } from "../types/cart-item";
+import { formatDate } from "../helpers/format-date";
 
 export function ProductItem({ product }: { product: Product }) {
   const { id, name, unit_price, created_at, updated_at } = product;
@@ -100,20 +101,10 @@ export function ProductItem({ product }: { product: Product }) {
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2">
         <span className="line-clamp-2 text-xs text-gray-400">
-          Fecha de creación:{" "}
-          {created_at.toLocaleDateString("es-MX", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
+          Fecha de creación: {formatDate(created_at)}
         </span>
         <span className="line-clamp-2 text-xs text-gray-400">
-          Fecha de actualización:{" "}
-          {updated_at.toLocaleDateString("es-MX", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
+          Fecha de actualización: {formatDate(updated_at)}
         </span>
       </CardContent>
       <CardFooter className="justify-between">
