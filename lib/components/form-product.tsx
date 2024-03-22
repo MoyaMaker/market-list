@@ -1,6 +1,7 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { EllipsisIcon, PlusIcon } from "lucide-react";
 
 import { FormProductSchema } from "../schemas/product";
@@ -24,21 +25,49 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useState } from "react";
+import { createProduct } from "../services/products";
+import { useProducts } from "./providers/products-provider";
 
 export function FormProduct() {
   const [open, setOpen] = useState(false);
+  const { add } = useProducts();
 
   const form = useForm<FormProduct>({
     resolver: zodResolver(FormProductSchema),
     mode: "onSubmit",
   });
 
-  const onSubmit: SubmitHandler<FormProduct> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormProduct> = async (data) => {
+    const response = await createProduct({
+      product: data,
+    });
+
+    if (response.ok) {
+      const json = await response.json();
+
+      reset();
+      closeModal();
+      add(json.product);
+    }
   };
 
   const openModal = () => setOpen(true);
+  const closeModal = () => setOpen(false);
+
+  const reset = useCallback(
+    () =>
+      form.reset({
+        name: undefined,
+        unit_price: undefined,
+      }),
+    [form]
+  );
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
 
   return (
     <>

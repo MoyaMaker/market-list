@@ -4,9 +4,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Header } from "@/lib/components/header";
-import { CartProvider } from "@/lib/components/cart-provider";
-import { ThemeProvider } from "@/lib/components/theme-provider";
-import { SessionProvider } from "@/lib/components/session-provider";
+import { CartProvider } from "@/lib/components/providers/cart-provider";
+import { ThemeProvider } from "@/lib/components/providers/theme-provider";
+import { SessionProvider } from "@/lib/components/providers/session-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 

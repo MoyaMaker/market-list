@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Product } from "../types/product";
-import { useCart } from "./cart-provider";
+import { useCart } from "./providers/cart-provider";
 import { CartItem } from "../types/cart-item";
 import { formatDate } from "../helpers/format-date";
 

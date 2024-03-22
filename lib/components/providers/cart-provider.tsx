@@ -9,7 +9,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { CartItem } from "../types/cart-item";
+import { CartItem } from "../../types/cart-item";
 
 type CartContextType = {
   cartItems: CartItem[];
@@ -19,7 +19,7 @@ type CartContextType = {
   countChecked: number;
   add: (item: CartItem) => void;
   update: (updatedItem: CartItem) => void;
-  remove: (id: number) => void;
+  remove: (id: string) => void;
   removeSelected: () => void;
 };
 
@@ -50,7 +50,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const add = (newItem: CartItem) =>
     setCartItems((items) => [...items, newItem]);
 
-  const remove = (id: number) =>
+  const remove = (id: string) =>
     setCartItems((items) => items.filter((it) => it.product.id !== id));
 
   const update = (updatedItem: CartItem) =>

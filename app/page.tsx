@@ -1,42 +1,66 @@
-import { ProductItem } from "@/lib/components/product-item";
-import { Input } from "@/lib/components/ui/input";
-
 import { getProducts } from "@/lib/services/products";
-import { Product } from "@/lib/types/product";
 import { FormProduct } from "@/lib/components/form-product";
+import { Search } from "@/lib/components/search";
+import { Product } from "@/lib/types/product";
+import { Badge } from "@/lib/components/ui/badge";
+import { ProductsProvider } from "@/lib/components/providers/products-provider";
+import ProductsList from "./products-list";
 
-const products = async (): Promise<{
-  products: Product[];
-}> => {
-  const response = await getProducts({});
-
-  if (response.ok) {
-    return response.json();
-  }
-
-  throw new Error("Error getting products");
+type HomeProps = {
+  searchParams: {
+    search?: string;
+  };
 };
 
-export default async function Home() {
-  const data = await products();
+const products = async (
+  search?: string
+): Promise<{
+  products: Product[];
+}> => {
+  try {
+    const response = await getProducts({
+      search,
+      next: {
+        tags: ["products"],
+        revalidate: 30,
+      },
+    });
+
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw new Error("Error fetch product", {
+      cause: response.statusText,
+    });
+  } catch (error) {
+    throw new Error("Error getting products", {
+      cause: error,
+    });
+  }
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const data = await products(searchParams.search);
 
   return (
-    <main className="container mt-4">
-      <section className="grid grid-cols-2 items-center gap-2">
-        <h1 className="font-medium text-xl">Productos</h1>
+    <ProductsProvider initialProducts={data.products}>
+      <main className="container mt-4">
+        <section className="grid grid-cols-2 items-center gap-2">
+          <h1 className="flex items-center font-medium text-xl">
+            <span className="mr-2">Productos</span>
+            <Badge>{data.products.length}</Badge>
+          </h1>
 
-        <FormProduct />
+          <FormProduct />
 
-        <div className="col-span-2 md:max-w-xs">
-          <Input placeholder="Buscar" />
-        </div>
-      </section>
+          <div className="col-span-2 md:max-w-xs">
+            <Search />
+          </div>
+        </section>
 
-      <section className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 my-8">
-        {data.products.map((product) => (
-          <ProductItem key={product.id} product={product} />
-        ))}
-      </section>
-    </main>
+        <ProductsList />
+      </main>
+    </ProductsProvider>
   );
 }

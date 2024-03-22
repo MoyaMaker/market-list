@@ -6,7 +6,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { CartItem } from "../types/cart-item";
-import { useCart } from "./cart-provider";
+import { useCart } from "./providers/cart-provider";
 import {
   Card,
   CardContent,

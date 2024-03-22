@@ -13,7 +13,7 @@ import {
 } from "@/lib/components/ui/sheet";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { useCart } from "./cart-provider";
+import { useCart } from "./providers/cart-provider";
 
 import { Checkbox } from "./ui/checkbox";
 import { ScrollArea } from "./ui/scroll-area";
