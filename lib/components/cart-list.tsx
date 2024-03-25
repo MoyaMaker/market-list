@@ -1,5 +1,5 @@
 "use client";
-import { ShoppingCartIcon, TrashIcon } from "lucide-react";
+import { LoaderCircleIcon, ShoppingCartIcon, TrashIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import {
@@ -22,6 +22,7 @@ import { CartItem } from "./cart-item";
 
 export function CartList() {
   const {
+    loading,
     cartItems,
     count,
     countChecked,
@@ -33,6 +34,17 @@ export function CartList() {
   const { data } = useSession();
 
   if (!data) return "";
+
+  if (loading) {
+    return (
+      <Button disabled>
+        <ShoppingCartIcon className="w-4 h-4 mr-2" />
+        <Badge>
+          <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+        </Badge>
+      </Button>
+    );
+  }
 
   return (
     <Sheet>
@@ -71,6 +83,11 @@ export function CartList() {
 
         <ScrollArea className="flex-1">
           <div className="space-y-4">
+            {(!cartItems || cartItems.length === 0) && (
+              <span className="text-slate-500 text-base">
+                Aún no hay elementos en carrito
+              </span>
+            )}
             {cartItems &&
               cartItems.map((item) => (
                 <CartItem key={JSON.stringify(item)} item={item} />

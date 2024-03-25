@@ -54,3 +54,21 @@ export function deleteProduct({
     signal,
   });
 }
+
+export function updateProduct({
+  id,
+  product,
+  signal,
+}: {
+  id: string;
+  product: FormProduct;
+  signal?: AbortSignal;
+}) {
+  const url = apiUrlBuilder(`/product/${id}`);
+
+  return fetch(url, {
+    method: "PUT",
+    signal,
+    body: JSON.stringify(product),
+  });
+}

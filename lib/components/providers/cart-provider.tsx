@@ -10,9 +10,11 @@ import {
   useState,
 } from "react";
 import { CartItem } from "../../types/cart-item";
+import { getCartItems } from "@/lib/services/cart";
 
 type CartContextType = {
-  cartItems: CartItem[];
+  loading: boolean;
+  cartItems: CartItem[] | undefined;
   selectAll: boolean;
   setSelectAll: Dispatch<SetStateAction<boolean>>;
   count: number;
@@ -30,12 +32,15 @@ type CartProviderProps = {
 const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[] | undefined>();
   const [selectAll, setSelectAll] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const count = useMemo(() => cartItems.length, [cartItems]);
+  const count = useMemo(() => cartItems?.length || 0, [cartItems]);
 
   const countChecked = useMemo(() => {
+    if (!cartItems) return 0;
+
     let c = 0;
 
     cartItems.forEach((item) => {
@@ -48,20 +53,22 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   }, [cartItems]);
 
   const add = (newItem: CartItem) =>
-    setCartItems((items) => [...items, newItem]);
+    setCartItems((items) => [...(items || []), newItem]);
 
   const remove = (id: string) =>
-    setCartItems((items) => items.filter((it) => it.product.id !== id));
+    setCartItems((items) => items?.filter((it) => it.product.id !== id));
 
   const update = (updatedItem: CartItem) =>
     setCartItems((items) =>
-      items.map((itm) =>
+      items?.map((itm) =>
         itm.product.id === updatedItem.product.id ? updatedItem : itm
       )
     );
 
   const removeSelected = () => {
-    cartItems.forEach((item) => {
+    if (!cartItems) return;
+
+    cartItems?.forEach((item) => {
       if (item.selected) {
         remove(item.product.id);
       }
@@ -70,7 +77,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   useEffect(() => {
     setCartItems((items) =>
-      items.map((item) => {
+      items?.map((item) => {
         const updatedItem = {
           ...item,
           selected: selectAll,
@@ -81,9 +88,32 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     );
   }, [selectAll]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    getItems(controller);
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  const getItems = async (controller: AbortController) => {
+    const response = await getCartItems(controller);
+
+    if (response.ok) {
+      const json = await response.json();
+
+      setCartItems(json.items);
+
+      setLoading(false);
+    }
+  };
+
   return (
     <CartContext.Provider
       value={{
+        loading,
         cartItems,
         selectAll,
         setSelectAll,

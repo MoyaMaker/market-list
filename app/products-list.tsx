@@ -4,7 +4,7 @@ import { ProductItem } from "@/lib/components/product-item";
 import { useProducts } from "@/lib/components/providers/products-provider";
 
 export default function ProductsList() {
-  const { products } = useProducts();
+  const { products, editProduct } = useProducts();
 
   return (
     <section className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 my-8">

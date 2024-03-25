@@ -35,8 +35,14 @@ import {
   AlertDialog,
   AlertDialogTrigger,
 } from "@/lib/components/ui/alert-dialog";
+import { useProducts } from "./providers/products-provider";
 
 export function ProductItem({ product }: { product: Product }) {
+  // Providers
+  const { add, update, cartItems } = useCart();
+  const { openForm, setEditProduct } = useProducts();
+
+  // States
   const { id, name, unit_price, created_at, updated_at } = product;
   const [quantity, setQuantity] = useState("1");
 
@@ -56,10 +62,8 @@ export function ProductItem({ product }: { product: Product }) {
     }
   };
 
-  const { add, update, cartItems } = useCart();
-
   const itemCart = useMemo(() => {
-    const result = cartItems.find((item) => item.product.id === id);
+    const result = cartItems?.find((item) => item.product.id === id);
 
     if (result) {
       setQuantity(result.quantity.toString());
@@ -67,6 +71,12 @@ export function ProductItem({ product }: { product: Product }) {
       return result;
     }
   }, [cartItems, id]);
+
+  const onEditProduct = () => {
+    setEditProduct(product);
+
+    openForm();
+  };
 
   useEffect(() => {
     if (itemCart) {
@@ -92,11 +102,10 @@ export function ProductItem({ product }: { product: Product }) {
               <DropdownMenuContent>
                 <DropdownMenuLabel>Opciones</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Editar</DropdownMenuItem>
-                {/* <DropdownMenuItem>Eliminar</DropdownMenuItem> */}
-                {/* <AlertDialogDemo /> */}
+                <DropdownMenuItem onClick={onEditProduct}>
+                  Editar
+                </DropdownMenuItem>
                 <AlertDialogTrigger asChild>
-                  {/* <Button variant="outline">Show Dialog</Button> */}
                   <DropdownMenuItem>Eliminar</DropdownMenuItem>
                 </AlertDialogTrigger>
               </DropdownMenuContent>

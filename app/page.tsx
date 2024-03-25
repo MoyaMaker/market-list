@@ -1,10 +1,10 @@
 import { getProducts } from "@/lib/services/products";
-import { FormProduct } from "@/lib/components/form-product";
 import { Search } from "@/lib/components/search";
 import { Product } from "@/lib/types/product";
 import { ProductsProvider } from "@/lib/components/providers/products-provider";
 import ProductsList from "./products-list";
 import { ProductsCounter } from "@/lib/components/products-counter";
+import { ButtonNewProduct } from "@/lib/components/button-new-product";
 
 type HomeProps = {
   searchParams: {
@@ -49,7 +49,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <ProductsCounter />
           </h1>
 
-          <FormProduct />
+          <ButtonNewProduct />
 
           <div className="col-span-2 md:max-w-xs">
             <Search />

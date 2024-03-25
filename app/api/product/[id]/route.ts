@@ -20,3 +20,36 @@ export async function DELETE(
     message: "No se eliminó ningún dato",
   });
 }
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { name, unit_price } = await request.json();
+
+  const updatedProduct = await db.product.update({
+    data: {
+      name,
+      unit_price,
+    },
+    where: {
+      id: params.id,
+    },
+  });
+
+  if (!updatedProduct) {
+    return NextResponse.json(
+      {
+        message: "No puedo actualizar este producto",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  return NextResponse.json({
+    message: "Producto actualizado",
+    product: updatedProduct,
+  });
+}

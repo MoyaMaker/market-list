@@ -1,5 +1,12 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { Product } from "../../types/product";
 
@@ -7,6 +14,12 @@ type ProductsContextType = {
   products: Product[];
   add(product: Product): void;
   remove(id: string): void;
+  update(product: Product): void;
+  modalProductState: boolean;
+  openForm(): void;
+  closeForm(): void;
+  editProduct: Product | undefined;
+  setEditProduct: Dispatch<SetStateAction<Product | undefined>>;
 };
 
 type ProductsProviderProps = {
@@ -20,7 +33,9 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
   initialProducts,
   children,
 }) => {
+  const [modalProductState, setModalProductState] = useState(false);
   const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [editProduct, setEditProduct] = useState<Product | undefined>();
 
   const add = (newProduct: Product) =>
     setProducts((items) => [newProduct, ...items]);
@@ -35,6 +50,9 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
       )
     );
 
+  const openForm = () => setModalProductState(true);
+  const closeForm = () => setModalProductState(false);
+
   useEffect(() => {
     setProducts(initialProducts);
   }, [initialProducts]);
@@ -45,6 +63,12 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
         products,
         add,
         remove,
+        update,
+        modalProductState,
+        openForm,
+        closeForm,
+        editProduct,
+        setEditProduct,
       }}
     >
       {children}
