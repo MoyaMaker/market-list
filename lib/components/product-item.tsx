@@ -30,6 +30,11 @@ import { Product } from "../types/product";
 import { useCart } from "./providers/cart-provider";
 import { CartItem } from "../types/cart-item";
 import { formatDate } from "../helpers/format-date";
+import { ConfirmDeleteContent } from "./confirm-delete";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+} from "@/lib/components/ui/alert-dialog";
 
 export function ProductItem({ product }: { product: Product }) {
   const { id, name, unit_price, created_at, updated_at } = product;
@@ -76,87 +81,95 @@ export function ProductItem({ product }: { product: Product }) {
   }, [quantity]);
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <EllipsisIcon />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Editar</DropdownMenuItem>
-              <DropdownMenuItem>Eliminar</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <CardTitle className="text-xl">{name}</CardTitle>
-        <CardDescription className="text-base">
-          {unit_price.toLocaleString("es-MX", {
-            style: "currency",
-            currency: "MXN",
-          })}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-wrap gap-2">
-        <span className="line-clamp-2 text-xs text-gray-400">
-          Fecha de creación: {formatDate(created_at)}
-        </span>
-        <span className="line-clamp-2 text-xs text-gray-400">
-          Fecha de actualización: {formatDate(updated_at)}
-        </span>
-      </CardContent>
-      <CardFooter className="justify-between">
-        <div className="flex items-center">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={removeQuantity}
-          >
-            <ChevronLeftIcon className="w-4 h-4" />
-          </Button>
-          <Input
-            type="text"
-            value={quantity}
-            className="max-w-16 text-center text-lg"
-            onChange={onChangeQuantity}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={addQuantity}
-          >
-            <ChevronRightIcon className="w-4 h-4" />
-          </Button>
-        </div>
+    <AlertDialog>
+      <Card>
+        <CardHeader>
+          <div className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <EllipsisIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Editar</DropdownMenuItem>
+                {/* <DropdownMenuItem>Eliminar</DropdownMenuItem> */}
+                {/* <AlertDialogDemo /> */}
+                <AlertDialogTrigger asChild>
+                  {/* <Button variant="outline">Show Dialog</Button> */}
+                  <DropdownMenuItem>Eliminar</DropdownMenuItem>
+                </AlertDialogTrigger>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <CardTitle className="text-xl">{name}</CardTitle>
+          <CardDescription className="text-base">
+            {unit_price.toLocaleString("es-MX", {
+              style: "currency",
+              currency: "MXN",
+            })}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          <span className="line-clamp-2 text-xs text-gray-400">
+            Fecha de creación: {formatDate(created_at)}
+          </span>
+          <span className="line-clamp-2 text-xs text-gray-400">
+            Fecha de actualización: {formatDate(updated_at)}
+          </span>
+        </CardContent>
+        <CardFooter className="justify-between">
+          <div className="flex items-center">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={removeQuantity}
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+            </Button>
+            <Input
+              type="text"
+              value={quantity}
+              className="max-w-16 text-center text-lg"
+              onChange={onChangeQuantity}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={addQuantity}
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </Button>
+          </div>
 
-        <Button
-          onClick={() => {
-            if (!itemCart) {
-              add({
-                selected: false,
-                product,
-                quantity: parseFloat(quantity),
-              });
-            }
-          }}
-        >
-          {itemCart ? (
-            <>
-              <CheckIcon className="mr-2 w-4 h-4" />
-              Añadido
-            </>
-          ) : (
-            <>
-              <ShoppingCartIcon className="mr-2 w-4 h-4" />
-              Añadir
-            </>
-          )}
-        </Button>
-      </CardFooter>
-    </Card>
+          <Button
+            onClick={() => {
+              if (!itemCart) {
+                add({
+                  selected: false,
+                  product,
+                  quantity: parseFloat(quantity),
+                });
+              }
+            }}
+          >
+            {itemCart ? (
+              <>
+                <CheckIcon className="mr-2 w-4 h-4" />
+                Añadido
+              </>
+            ) : (
+              <>
+                <ShoppingCartIcon className="mr-2 w-4 h-4" />
+                Añadir
+              </>
+            )}
+          </Button>
+        </CardFooter>
+      </Card>
+      <ConfirmDeleteContent id={id} />
+    </AlertDialog>
   );
 }

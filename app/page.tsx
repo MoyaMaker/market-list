@@ -2,9 +2,9 @@ import { getProducts } from "@/lib/services/products";
 import { FormProduct } from "@/lib/components/form-product";
 import { Search } from "@/lib/components/search";
 import { Product } from "@/lib/types/product";
-import { Badge } from "@/lib/components/ui/badge";
 import { ProductsProvider } from "@/lib/components/providers/products-provider";
 import ProductsList from "./products-list";
+import { ProductsCounter } from "@/lib/components/products-counter";
 
 type HomeProps = {
   searchParams: {
@@ -20,10 +20,7 @@ const products = async (
   try {
     const response = await getProducts({
       search,
-      next: {
-        tags: ["products"],
-        revalidate: 30,
-      },
+      cache: "no-store",
     });
 
     if (response.ok) {
@@ -49,7 +46,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <section className="grid grid-cols-2 items-center gap-2">
           <h1 className="flex items-center font-medium text-xl">
             <span className="mr-2">Productos</span>
-            <Badge>{data.products.length}</Badge>
+            <ProductsCounter />
           </h1>
 
           <FormProduct />

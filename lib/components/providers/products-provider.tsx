@@ -1,11 +1,12 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { Product } from "../../types/product";
 
 type ProductsContextType = {
   products: Product[];
   add(product: Product): void;
+  remove(id: string): void;
 };
 
 type ProductsProviderProps = {
@@ -34,11 +35,16 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
       )
     );
 
+  useEffect(() => {
+    setProducts(initialProducts);
+  }, [initialProducts]);
+
   return (
     <ProductsContext.Provider
       value={{
         products,
         add,
+        remove,
       }}
     >
       {children}

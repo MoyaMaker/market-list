@@ -5,10 +5,12 @@ export function getProducts({
   search,
   signal,
   next,
+  cache,
 }: {
   search?: string;
   signal?: AbortSignal;
   next?: NextFetchRequestConfig | undefined;
+  cache?: RequestCache | undefined;
 }) {
   const url = apiUrlBuilder("/products");
 
@@ -18,6 +20,7 @@ export function getProducts({
     method: "GET",
     signal,
     next,
+    cache,
   });
 }
 
@@ -40,17 +43,14 @@ export function createProduct({
 export function deleteProduct({
   id,
   signal,
-  next,
 }: {
   id: string;
   signal?: AbortSignal;
-  next?: NextFetchRequestConfig | undefined;
 }) {
   const url = apiUrlBuilder(`/product/${id}`);
 
   return fetch(url, {
     method: "DELETE",
     signal,
-    next,
   });
 }
