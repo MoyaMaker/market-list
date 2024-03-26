@@ -10,7 +10,12 @@ import {
   useState,
 } from "react";
 import { CartItem } from "../../types/cart-item";
-import { getCartItems } from "@/lib/services/cart";
+import {
+  addCartItem,
+  deleteCartItem,
+  getCartItems,
+  updateCartItem,
+} from "@/lib/services/cart";
 
 type CartContextType = {
   loading: boolean;
@@ -52,18 +57,30 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return c;
   }, [cartItems]);
 
-  const add = (newItem: CartItem) =>
+  const add = (newItem: CartItem) => {
     setCartItems((items) => [...(items || []), newItem]);
 
-  const remove = (id: string) =>
+    addToCart({
+      product_id: newItem.product.id,
+      quantity: newItem.quantity,
+    });
+  };
+
+  const remove = (id: string) => {
     setCartItems((items) => items?.filter((it) => it.product.id !== id));
 
-  const update = (updatedItem: CartItem) =>
+    deleteItem(id);
+  };
+
+  const update = (updatedItem: CartItem) => {
     setCartItems((items) =>
       items?.map((itm) =>
         itm.product.id === updatedItem.product.id ? updatedItem : itm
       )
     );
+
+    updateItem(updatedItem.product.id, updatedItem.quantity);
+  };
 
   const removeSelected = () => {
     if (!cartItems) return;
@@ -73,6 +90,47 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         remove(item.product.id);
       }
     });
+  };
+
+  const getItems = async (controller: AbortController) => {
+    try {
+      const response = await getCartItems(controller);
+
+      if (response.ok) {
+        const json = await response.json();
+
+        setCartItems(json.items);
+
+        setLoading(false);
+      }
+    } catch (error: any) {
+      if (error?.name === "AbortError") {
+        return;
+      }
+
+      console.error("Error getting cart items", error);
+    }
+  };
+
+  const addToCart = async ({
+    product_id,
+    quantity,
+  }: {
+    product_id: string;
+    quantity: number;
+  }) => {
+    const response = await addCartItem({
+      product_id,
+      quantity,
+    });
+  };
+
+  const updateItem = async (id: string, quantity: number) => {
+    const response = await updateCartItem(id, { quantity });
+  };
+
+  const deleteItem = async (id: string) => {
+    const response = await deleteCartItem(id);
   };
 
   useEffect(() => {
@@ -97,18 +155,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       controller.abort();
     };
   }, []);
-
-  const getItems = async (controller: AbortController) => {
-    const response = await getCartItems(controller);
-
-    if (response.ok) {
-      const json = await response.json();
-
-      setCartItems(json.items);
-
-      setLoading(false);
-    }
-  };
 
   return (
     <CartContext.Provider
