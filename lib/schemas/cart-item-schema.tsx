@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProductSchema } from "./product";
+import { ProductSchema } from "./product-schema";
 
 export const CartItemSchema = z.object({
   selected: z.boolean().default(false),

@@ -5,7 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon, EllipsisIcon } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { CartItem } from "../types/cart-item";
+import { CartItemType } from "../types/cart-item-type";
 import { useCart } from "./providers/cart-provider";
 import {
   Card,
@@ -25,7 +25,7 @@ import {
 } from "./ui/dropdown-menu";
 import { deleteCartItem, updateCartItem } from "../services/cart";
 
-export function CartItem({ item }: { item: CartItem }) {
+export function CartItem({ item }: { item: CartItemType }) {
   const {
     product: { id, name, unit_price },
   } = item;
@@ -60,7 +60,7 @@ export function CartItem({ item }: { item: CartItem }) {
   useEffect(() => {
     const controller = new AbortController();
 
-    const updatedItem: CartItem = {
+    const updatedItem: CartItemType = {
       ...item,
       selected,
       quantity: parseFloat(quantity),

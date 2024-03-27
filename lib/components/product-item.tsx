@@ -26,9 +26,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Product } from "../types/product";
+import { ProductType } from "../types/product-type";
 import { useCart } from "./providers/cart-provider";
-import { CartItem } from "../types/cart-item";
+import { CartItemType } from "../types/cart-item-type";
 import { formatDate } from "../helpers/format-date";
 import { ConfirmDeleteContent } from "./confirm-delete";
 import {
@@ -38,7 +38,7 @@ import {
 import { useProducts } from "./providers/products-provider";
 import { addCartItem, updateCartItem } from "../services/cart";
 
-export function ProductItem({ product }: { product: Product }) {
+export function ProductItem({ product }: { product: ProductType }) {
   // Providers
   const { add, update, cartItems } = useCart();
   const { openForm, setEditProduct } = useProducts();
@@ -102,7 +102,7 @@ export function ProductItem({ product }: { product: Product }) {
     const controller = new AbortController();
 
     if (itemCart) {
-      const updatedItem: CartItem = {
+      const updatedItem: CartItemType = {
         ...itemCart,
         quantity: parseFloat(quantity),
       };

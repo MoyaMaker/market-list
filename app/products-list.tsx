@@ -3,7 +3,7 @@
 import { ProductItem } from "@/lib/components/product-item";
 import { useProducts } from "@/lib/components/providers/products-provider";
 
-export default function ProductsList() {
+export function ProductsList() {
   const { products } = useProducts();
 
   return (

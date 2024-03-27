@@ -8,22 +8,22 @@ import {
   useState,
 } from "react";
 
-import { Product } from "../../types/product";
+import { ProductType } from "../../types/product-type";
 
 type ProductsContextType = {
-  products: Product[];
-  add(product: Product): void;
+  products: ProductType[];
+  add(product: ProductType): void;
   remove(id: string): void;
-  update(product: Product): void;
+  update(product: ProductType): void;
   modalProductState: boolean;
   openForm(): void;
   closeForm(): void;
-  editProduct: Product | undefined;
-  setEditProduct: Dispatch<SetStateAction<Product | undefined>>;
+  editProduct: ProductType | undefined;
+  setEditProduct: Dispatch<SetStateAction<ProductType | undefined>>;
 };
 
 type ProductsProviderProps = {
-  initialProducts: Product[];
+  initialProducts: ProductType[];
   children: React.ReactNode;
 };
 
@@ -34,16 +34,16 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
   children,
 }) => {
   const [modalProductState, setModalProductState] = useState(false);
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [editProduct, setEditProduct] = useState<Product | undefined>();
+  const [products, setProducts] = useState<ProductType[]>(initialProducts);
+  const [editProduct, setEditProduct] = useState<ProductType | undefined>();
 
-  const add = (newProduct: Product) =>
+  const add = (newProduct: ProductType) =>
     setProducts((items) => [newProduct, ...items]);
 
   const remove = (id: string) =>
     setProducts((items) => items.filter((product) => product.id !== id));
 
-  const update = (updatedProduct: Product) =>
+  const update = (updatedProduct: ProductType) =>
     setProducts((items) =>
       items.map((product) =>
         product.id === updatedProduct.id ? updatedProduct : product

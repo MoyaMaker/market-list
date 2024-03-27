@@ -1,10 +1,11 @@
 import { getProducts } from "@/lib/services/products";
 import { Search } from "@/lib/components/search";
-import { Product } from "@/lib/types/product";
+import { ProductType } from "@/lib/types/product-type";
 import { ProductsProvider } from "@/lib/components/providers/products-provider";
-import ProductsList from "./products-list";
+import { ProductsList } from "./products-list";
 import { ProductsCounter } from "@/lib/components/products-counter";
 import { ButtonNewProduct } from "@/lib/components/button-new-product";
+import { unstable_noStore } from "next/cache";
 
 type HomeProps = {
   searchParams: {
@@ -12,15 +13,13 @@ type HomeProps = {
   };
 };
 
-const products = async (
-  search?: string
-): Promise<{
-  products: Product[];
-}> => {
+async function getProductsList(search?: string): Promise<{
+  products: ProductType[];
+}> {
   try {
+    unstable_noStore();
     const response = await getProducts({
       search,
-      cache: "no-store",
     });
 
     if (response.ok) {
@@ -35,10 +34,10 @@ const products = async (
       cause: error,
     });
   }
-};
+}
 
 export default async function Home({ searchParams }: HomeProps) {
-  const data = await products(searchParams.search);
+  const data = await getProductsList(searchParams.search);
 
   return (
     <ProductsProvider initialProducts={data.products}>

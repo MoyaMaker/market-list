@@ -10,18 +10,18 @@ import {
   useState,
 } from "react";
 
-import { CartItem } from "../../types/cart-item";
+import { CartItemType } from "../../types/cart-item-type";
 import { getCartItems } from "@/lib/services/cart";
 
 type CartContextType = {
   loading: boolean;
-  cartItems: CartItem[] | undefined;
+  cartItems: CartItemType[] | undefined;
   selectAll: boolean;
   setSelectAll: Dispatch<SetStateAction<boolean>>;
   count: number;
   countChecked: number;
-  add: (item: CartItem) => void;
-  update: (updatedItem: CartItem) => void;
+  add: (item: CartItemType) => void;
+  update: (updatedItem: CartItemType) => void;
   remove: (id: string) => void;
   removeSelected: () => void;
 };
@@ -33,7 +33,7 @@ type CartProviderProps = {
 const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[] | undefined>();
+  const [cartItems, setCartItems] = useState<CartItemType[] | undefined>();
   const [selectAll, setSelectAll] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -53,14 +53,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return c;
   }, [cartItems]);
 
-  const add = (newItem: CartItem) =>
+  const add = (newItem: CartItemType) =>
     setCartItems((items) => [...(items || []), newItem]);
 
   const remove = (id: string) =>
     setCartItems((items) => items?.filter((it) => it.product.id !== id));
 
   const update = useCallback(
-    (updatedItem: CartItem) =>
+    (updatedItem: CartItemType) =>
       setCartItems((items) =>
         items?.map((itm) =>
           itm.product.id === updatedItem.product.id ? updatedItem : itm

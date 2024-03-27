@@ -1,10 +1,10 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { FormProductSchema } from "../schemas/product";
-import { FormProduct } from "../types/product";
+import { FormProductSchema } from "../schemas/product-schema";
+import { FormProductType } from "../types/product-type";
 import {
   Form,
   FormControl,
@@ -23,12 +23,12 @@ export function FormProduct() {
   const { modalProductState, closeForm } = useProducts();
   const { add, update, editProduct, setEditProduct } = useProducts();
 
-  const form = useForm<FormProduct>({
+  const form = useForm<FormProductType>({
     resolver: zodResolver(FormProductSchema),
     mode: "onSubmit",
   });
 
-  const onSubmit: SubmitHandler<FormProduct> = async (data) => {
+  const onSubmit: SubmitHandler<FormProductType> = async (data) => {
     if (editProduct) {
       const id = editProduct.id;
       const response = await updateProduct({ id, product: data });

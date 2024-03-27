@@ -1,5 +1,5 @@
 import { apiUrlBuilder } from "../helpers/api-url-builder";
-import { FormProduct } from "../types/product";
+import { FormProductType } from "../types/product-type";
 
 export function getProducts({
   search,
@@ -12,7 +12,7 @@ export function getProducts({
   next?: NextFetchRequestConfig | undefined;
   cache?: RequestCache | undefined;
 }) {
-  const url = apiUrlBuilder("/products");
+  const url = apiUrlBuilder("products");
 
   if (search) url.searchParams.append("search", search);
 
@@ -28,10 +28,10 @@ export function createProduct({
   product,
   signal,
 }: {
-  product: FormProduct;
+  product: FormProductType;
   signal?: AbortSignal;
 }) {
-  const url = apiUrlBuilder("/product");
+  const url = apiUrlBuilder("product");
 
   return fetch(url, {
     method: "POST",
@@ -47,7 +47,7 @@ export function deleteProduct({
   id: string;
   signal?: AbortSignal;
 }) {
-  const url = apiUrlBuilder(`/product/${id}`);
+  const url = apiUrlBuilder(`product/${id}`);
 
   return fetch(url, {
     method: "DELETE",
@@ -61,10 +61,10 @@ export function updateProduct({
   signal,
 }: {
   id: string;
-  product: FormProduct;
+  product: FormProductType;
   signal?: AbortSignal;
 }) {
-  const url = apiUrlBuilder(`/product/${id}`);
+  const url = apiUrlBuilder(`product/${id}`);
 
   return fetch(url, {
     method: "PUT",

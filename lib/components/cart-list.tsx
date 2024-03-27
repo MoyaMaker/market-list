@@ -1,6 +1,5 @@
 "use client";
 import { LoaderCircleIcon, ShoppingCartIcon, TrashIcon } from "lucide-react";
-import { useSession } from "next-auth/react";
 
 import {
   Sheet,
@@ -14,7 +13,6 @@ import {
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useCart } from "./providers/cart-provider";
-
 import { Checkbox } from "./ui/checkbox";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
@@ -30,10 +28,6 @@ export function CartList() {
     setSelectAll,
     removeSelected,
   } = useCart();
-
-  const { data } = useSession();
-
-  if (!data) return "";
 
   if (loading) {
     return (

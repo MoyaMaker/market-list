@@ -8,7 +8,7 @@
 | 🟥     | Organizar elementos en carrito                           |             |             |
 | 🟥     | Agrupar elementos en categorías                          |             |             |
 | 🟥     | Mostrar el subtotal y total                              |             |             |
-| 🛠️     | Esperar carga de carrito para mostrar el botón de añadir |             |             |
+| ❌     | Esperar carga de carrito para mostrar el botón de añadir |             |             |
 
 ---
 
