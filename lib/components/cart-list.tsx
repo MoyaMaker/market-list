@@ -90,7 +90,7 @@ export function CartList() {
             )}
             {cartItems &&
               cartItems.map((item) => (
-                <CartItem key={JSON.stringify(item)} item={item} />
+                <CartItem key={item.product.id} item={item} />
               ))}
           </div>
         </ScrollArea>

@@ -3,23 +3,35 @@ import { NextResponse } from "next/server";
 import db from "@/lib/db";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+  try {
+    const { searchParams } = new URL(request.url);
 
-  const search = searchParams.get("search") || "";
+    const search = searchParams.get("search") || "";
 
-  const products = await db.product.findMany({
-    where: {
-      name: {
-        contains: search,
+    const products = await db.product.findMany({
+      where: {
+        name: {
+          contains: search,
+        },
       },
-    },
-    orderBy: {
-      created_at: "desc",
-    },
-  });
+      orderBy: {
+        created_at: "desc",
+      },
+    });
 
-  return NextResponse.json({
-    message: "Productos encontrados",
-    products,
-  });
+    return NextResponse.json({
+      message: "Productos encontrados",
+      products,
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        message: "Couldn't find products",
+        error,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }

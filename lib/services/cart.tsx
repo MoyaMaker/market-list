@@ -22,9 +22,11 @@ export function getCartItems({
 export function addCartItem({
   product_id,
   quantity,
+  signal,
 }: {
   product_id: string;
   quantity: number;
+  signal?: AbortSignal;
 }) {
   const url = apiUrlBuilder("/cart");
 
@@ -34,22 +36,25 @@ export function addCartItem({
       product_id,
       quantity,
     }),
+    signal,
   });
 }
 
-export function updateCartItem(
-  id: string,
-  {
-    quantity,
-  }: {
-    quantity: number;
-  }
-) {
+export function updateCartItem({
+  id,
+  quantity,
+  signal,
+}: {
+  id: string;
+  quantity: number;
+  signal?: AbortSignal;
+}) {
   const url = apiUrlBuilder(`/cart/${id}`);
 
   return fetch(url, {
     method: "PUT",
     body: JSON.stringify({ quantity }),
+    signal,
   });
 }
 

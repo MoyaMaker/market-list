@@ -23,11 +23,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { deleteCartItem, updateCartItem } from "../services/cart";
 
 export function CartItem({ item }: { item: CartItem }) {
   const {
     product: { id, name, unit_price },
   } = item;
+
+  const { update, remove } = useCart();
 
   const [selected, setSelected] = useState(item.selected);
   const [quantity, setQuantity] = useState(item.quantity.toString());
@@ -48,9 +51,15 @@ export function CartItem({ item }: { item: CartItem }) {
     }
   };
 
-  const { update, remove } = useCart();
+  const deleteItem = () => {
+    deleteCartItem(id);
+
+    remove(id);
+  };
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const updatedItem: CartItem = {
       ...item,
       selected,
@@ -58,6 +67,20 @@ export function CartItem({ item }: { item: CartItem }) {
     };
 
     update(updatedItem);
+
+    updateCartItem({
+      id,
+      quantity: parseFloat(quantity),
+      signal: controller.signal,
+    }).catch((error: any) => {
+      if (error?.name === "AbortError") {
+        return;
+      }
+    });
+
+    return () => {
+      controller.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity, selected]);
 
@@ -75,7 +98,7 @@ export function CartItem({ item }: { item: CartItem }) {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Opciones</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => remove(id)}>
+                <DropdownMenuItem onClick={deleteItem}>
                   Eliminar
                 </DropdownMenuItem>
               </DropdownMenuContent>

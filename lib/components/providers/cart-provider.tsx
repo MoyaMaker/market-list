@@ -1,21 +1,17 @@
 "use client";
-
 import {
   Dispatch,
   SetStateAction,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
+
 import { CartItem } from "../../types/cart-item";
-import {
-  addCartItem,
-  deleteCartItem,
-  getCartItems,
-  updateCartItem,
-} from "@/lib/services/cart";
+import { getCartItems } from "@/lib/services/cart";
 
 type CartContextType = {
   loading: boolean;
@@ -57,30 +53,21 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return c;
   }, [cartItems]);
 
-  const add = (newItem: CartItem) => {
+  const add = (newItem: CartItem) =>
     setCartItems((items) => [...(items || []), newItem]);
 
-    addToCart({
-      product_id: newItem.product.id,
-      quantity: newItem.quantity,
-    });
-  };
-
-  const remove = (id: string) => {
+  const remove = (id: string) =>
     setCartItems((items) => items?.filter((it) => it.product.id !== id));
 
-    deleteItem(id);
-  };
-
-  const update = (updatedItem: CartItem) => {
-    setCartItems((items) =>
-      items?.map((itm) =>
-        itm.product.id === updatedItem.product.id ? updatedItem : itm
-      )
-    );
-
-    updateItem(updatedItem.product.id, updatedItem.quantity);
-  };
+  const update = useCallback(
+    (updatedItem: CartItem) =>
+      setCartItems((items) =>
+        items?.map((itm) =>
+          itm.product.id === updatedItem.product.id ? updatedItem : itm
+        )
+      ),
+    []
+  );
 
   const removeSelected = () => {
     if (!cartItems) return;
@@ -110,27 +97,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
       console.error("Error getting cart items", error);
     }
-  };
-
-  const addToCart = async ({
-    product_id,
-    quantity,
-  }: {
-    product_id: string;
-    quantity: number;
-  }) => {
-    const response = await addCartItem({
-      product_id,
-      quantity,
-    });
-  };
-
-  const updateItem = async (id: string, quantity: number) => {
-    const response = await updateCartItem(id, { quantity });
-  };
-
-  const deleteItem = async (id: string) => {
-    const response = await deleteCartItem(id);
   };
 
   useEffect(() => {

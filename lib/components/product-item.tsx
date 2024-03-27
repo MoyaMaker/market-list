@@ -36,6 +36,7 @@ import {
   AlertDialogTrigger,
 } from "@/lib/components/ui/alert-dialog";
 import { useProducts } from "./providers/products-provider";
+import { addCartItem, updateCartItem } from "../services/cart";
 
 export function ProductItem({ product }: { product: Product }) {
   // Providers
@@ -55,7 +56,11 @@ export function ProductItem({ product }: { product: Product }) {
 
       return value > 1 ? (value - 1).toString() : q;
     });
-  const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeQuantity = (
+    e: React.ChangeEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>
+  ) => {
+    if (itemCart && e.type === "change") return;
+
     const value = e.currentTarget.value;
     if (/^\d*\.?\d*$/.test(value)) {
       setQuantity(value);
@@ -78,7 +83,24 @@ export function ProductItem({ product }: { product: Product }) {
     openForm();
   };
 
+  const addProductToCart = () => {
+    if (!itemCart) {
+      add({
+        selected: false,
+        product,
+        quantity: parseFloat(quantity),
+      });
+
+      addCartItem({
+        product_id: id,
+        quantity: parseFloat(quantity),
+      });
+    }
+  };
+
   useEffect(() => {
+    const controller = new AbortController();
+
     if (itemCart) {
       const updatedItem: CartItem = {
         ...itemCart,
@@ -86,7 +108,21 @@ export function ProductItem({ product }: { product: Product }) {
       };
 
       update(updatedItem);
+
+      updateCartItem({
+        id,
+        quantity: parseFloat(quantity),
+        signal: controller.signal,
+      }).catch((error) => {
+        if (error?.name === "AbortError") {
+          return;
+        }
+      });
     }
+
+    return () => {
+      controller.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity]);
 
@@ -138,10 +174,12 @@ export function ProductItem({ product }: { product: Product }) {
               <ChevronLeftIcon className="w-4 h-4" />
             </Button>
             <Input
+              key={itemCart?.quantity}
               type="text"
-              value={quantity}
+              defaultValue={quantity}
               className="max-w-16 text-center text-lg"
               onChange={onChangeQuantity}
+              onBlur={onChangeQuantity}
             />
             <Button
               type="button"
@@ -153,17 +191,7 @@ export function ProductItem({ product }: { product: Product }) {
             </Button>
           </div>
 
-          <Button
-            onClick={() => {
-              if (!itemCart) {
-                add({
-                  selected: false,
-                  product,
-                  quantity: parseFloat(quantity),
-                });
-              }
-            }}
-          >
+          <Button onClick={addProductToCart}>
             {itemCart ? (
               <>
                 <CheckIcon className="mr-2 w-4 h-4" />
